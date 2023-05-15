@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      #progressBar {
+        width: 0%;
+        height: 20px;
+        background: #4CAF50;
+      }
+      #progressContainer {
+        width: 80%;
+        height: 20px;
+        background: #fff;
+      }
+      #loadingText {
+        color: #fff;
+        font-size: 2em;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
+    <div id="loadingText">Loading...</div>
+    <!-- Your Unity WebGL will be appended here -->
+    <div id="unityContainer"></div>
+    <script>
+      
+      var script = document.createElement('script');
+      script.src = 'Build/abc.loader.js';
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/abc.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/abc.data.gz",
+        frameworkUrl: buildUrl + "/abc.framework.js.gz",
+        codeUrl: buildUrl + "/abc.wasm.gz",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "My project",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+      script.onload = () => {
+        createUnityInstance(document.querySelector('#unityContainer'), config, (progress) => {
+          document.querySelector('#progressBar').style.width = 100 * progress + '%';
+          if (progress === 1) {
+            document.querySelector('#loadingText').innerHTML = 'Loading complete!';
+          }
+        }, (error) => {
+          console.error(error);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
+</html>
