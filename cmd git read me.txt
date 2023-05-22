@@ -1,0 +1,10 @@
+git init
+git remote add -f unity-webgl https://github.com/mhrkleo/unity-webgl.git
+git checkout main
+git pull --all
+git push
+
+-__-
+
+git add .
+git commit -m "Gz compression issue resolved"
